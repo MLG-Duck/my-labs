@@ -1,0 +1,59 @@
+#include "pch.h"
+#include <stdio.h>
+#include <Windows.h>
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+void addUser(userData[]) {
+	FILE *file;
+
+	fopen_s(&file, "file.txt", "a");
+
+	if (file != NULL)
+	{
+		fputs(userData, file); // write string in file
+		fclose(file);
+	}
+}
+
+void getUserData() {
+	FILE *file;
+
+	fopen_s(&file, "file.txt", "r");
+
+	char userName[20], userLastName[20],  userSex[20],userBirthday[20], userTel[20], userWeight[20], userIndex[20], userCountry[20], userCity[20], userHome[20];
+	if (file != NULL)
+	{
+		while (!feof(file)) {
+			fscanf_s(file, "%s %s %s %s %s %s %s %s %s %s\n", userName,20, userLastName,20, userSex,20, userBirthday,20, userTel,20, userWeight,20, userIndex,20, userCountry,20, userCity,20, userHome,20); // read string from file
+			printf("%s %s %s %s %s %s %s %s %s %s\n", userName,userLastName, userSex, userBirthday,  userTel,  userWeight, userIndex, userCountry, userCity,  userHome);
+		}
+
+		fclose(file);
+	}
+}
+	
+
+
+int main() {
+	int i = 0;
+	char userdata = new char;
+	cout << "Enter user's data in form NAME, LASTNAME, SEX, BIRTHDAY, TEL NUMBER, WEIGHT, HOME INDEX, USER'S COUNTRY, CITY and Home ";
+	while (userData[i]!= "/n") {
+		cin >> userData[i];
+		i++;
+	}
+
+	addUser(userData);
+
+	
+
+	getUserData();
+
+	
+
+	return 0;
+}
