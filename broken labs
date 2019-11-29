@@ -1,3 +1,7 @@
+55555555555555555555555555555555555
+labbbbbbbbbbbbbbb
+
+
 #include "pch.h"
 #include <stdio.h>
 #include <Windows.h>
@@ -54,6 +58,32 @@ int main() {
 	getUserData();
 
 	
+
+	return 0;
+}
+
+
+333333333333333333333333333 
+labbbbbbbbbbbbbbbbbbbb
+
+#include "pch.h"
+#include <iostream>
+#include <Windows.h>
+
+
+
+using namespace std;
+
+int main()
+{
+	char vvod[50];
+	char txt[10][10];
+	int i, k;
+
+	cin.get(vvod, 50);
+	for (i = 0; i < 50; i++) {
+		if 
+	}
 
 	return 0;
 }
