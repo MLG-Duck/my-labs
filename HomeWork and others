@@ -66,29 +66,33 @@ int main() {
 
 
 
+#include "pch.h"
 #include <iostream>
+
 
 using namespace std;
 
 int main()
 {
-    int dlin, i,p,t = 0;
-    cout << "enter leghth of array" << endl;
-    cin >> dlin;
-    int *mas = new int [dlin];
-    
-    cout << "enter array" << dlin << endl;
-    for (i=0;i<dlin;i++){
-        cin >> mas[i];
-    }
-    cout << "vvedite chislo" << endl;
-    cin >> p;
-    for (i=0;i<dlin;i++){
-        if (mas[i] == p){
-            t++;
-        }
-    }
-    cout << "kol-vo povtorov: " << t;
-    return 0;
+	int dlin, i, p, t = 0;
+	cout << "enter leghth of array" << endl;
+	cin >> dlin;
+	int *mas = new int[dlin];
+
+	cout << "enter array" << dlin << endl;
+	for (i = 0; i < dlin; i++) {
+		cin >> mas[i];
+	}
+	cout << "vvedite chislo" << endl;
+	cin >> p;
+	for (i = 0; i < dlin; i++) {
+		if (mas[i] == p) {
+			t++;
+		}
+	}
+	cout << "kol-vo povtorov: " << t;
+	delete[] mas;
+
+	return 0;
 }
 
