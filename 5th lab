@@ -1,0 +1,87 @@
+#define _CRT_SECURE_NO_WARNINGS 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <iostream> 
+#include <string.h> 
+#include <fstream> 
+using namespace std;
+
+struct pac {
+	char name[20];
+	char surname[20];
+	char fathername[20];
+	int year;
+	char medn[20];
+	char blgroup[1];
+	char res[1];
+	char diag[20];
+};
+int n;
+int main()
+{
+	
+	FILE* S1 = fopen("S1.txt", "w");
+	struct pac p1[1];
+	int i;
+	for (i = 0; i < 3; i++)
+	{
+		printf("pacient number %d\n", i + 1);
+		printf("name: ");
+		gets_s(p1[i].name);
+		printf("surname: ");
+		gets_s(p1[i].surname);
+		printf("fathername: ");
+		gets_s(p1[i].fathername);
+		printf("year of birdth: ");
+		scanf("%d",p1[i].year);
+		printf("number of med card: ");
+		gets_s(p1[i].medn);
+		printf("groube of blood: ");
+		gets_s(p1[i].blgroup);
+		printf("res-fact: ");
+		gets_s(p1[i].res);
+		printf("diagnosis: ");
+		gets_s(p1[i].diag);
+	}
+	for (i = 0; i < 3; i++)
+	{
+		fprintf(S1, "pacient number %d\n", i + 1);
+		fprintf(S1, "Name: %s\n", p1[i].name);
+		fprintf(S1, "Surname: %s\n", p1[i].surname);
+		fprintf(S1, "FAthername: %s\n", p1[i].fathername);
+		fprintf(S1, "year of birdth : %d\n", p1[i].year);
+		fprintf(S1, "number of med card: %s\n", p1[i].medn);
+		fprintf(S1, "groube of blood: %s\n", p1[i].blgroup);
+		fprintf(S1, "res-fact: %s\n", p1[i].res);
+		fprintf(S1, "diagnosis: %s\n", p1[i].diag);
+		printf( "pacient number %d\n", i + 1);
+		printf( "Name: %s\n", p1[i].name);
+		printf( "Surname: %s\n", p1[i].surname);
+		printf( "FAthername: %s\n", p1[i].fathername);
+		printf( "year of birdth : %d\n", p1[i].year);
+		printf( "number of med card: %s\n", p1[i].medn);
+		printf( "groube of blood: %s\n", p1[i].blgroup);
+		printf( "res-fact: %s\n", p1[i].res);
+		printf( "diagnosis: %s\n", p1[i].diag);
+	}
+	fclose(S1);
+
+	printf("Write birdth year which u want search: \n");
+	scanf("%d", n);
+
+	for (i = 0; i < 3; i++) {
+		if (p1[i].year == n) {
+			printf("pacient number %d\n", i + 1);
+			printf("Name: %s\n", p1[i].name);
+			printf("Surname: %s\n", p1[i].surname);
+			printf("FAthername: %s\n", p1[i].fathername);
+			printf("year of birdth : %d\n", p1[i].year);
+			printf("number of med card: %s\n", p1[i].medn);
+			printf("groube of blood: %s\n", p1[i].blgroup);
+			printf("res-fact: %s\n", p1[i].res);
+			printf("diagnosis: %s\n", p1[i].diag);
+		}
+	}
+	system("pause");
+	return 0;
+}
