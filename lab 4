@@ -39,3 +39,176 @@ int main() {
 	system("pause");
 	return 0;
 }
+
+
+
+
+#include <iostream>
+#include <cstring>
+#include <stdio.h>
+#include <Windows.h>
+#include <string>
+using namespace std;
+
+struct Pet
+{
+	char pet_name[20];
+	char pet_sur[20];
+	char pet_otc[20];
+
+};
+struct Info
+{
+	char ill[30];
+	Pet man;
+	int year;
+	char date[20];
+	int bl;
+	int num;
+};
+
+
+
+int main()
+{
+	int i = 0;
+	setlocale(LC_ALL, "Rus");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	int num = 100;
+	Info* petient = new Info[num];
+	FILE* file;
+	fopen_s(&file, "input.txt", "r");
+	if (file != NULL)
+	{
+
+		while (!feof(file)) {
+			fscanf_s(file, "%s%*c%s%*c%s%*c%s%*c%d%*c%s%*c%d%*c%d\n", petient[i].ill, 30, petient[i].man.pet_name, 30, petient[i].man.pet_sur, 30, petient[i].man.pet_otc, 30, &petient[i].year, petient[i].date, 20, &petient[i].bl, &petient[i].num); // read string from file
+			i++;
+		}
+
+		fclose(file);
+	}
+	int m = i;
+	cout << "Скольо пациентов вы бы хотели добавить: ";
+	cin >> num;
+	int sum = num + i;
+	num = sum;
+
+	for (int i = m; i < num; i++)
+	{
+		cout << "Введите название болезни: ";
+		cin.ignore();
+		cin.getline(petient[i].ill, 30);
+		
+		cout << "Введите имя режиссера: ";
+		cin.getline(petient[i].man.pet_name, 20);
+		
+		cout << "Введите фамилию режиссера: ";
+		cin.getline(petient[i].man.pet_sur, 20);
+	
+		cout << "Введите отчество режиссера: ";
+		cin.getline(petient[i].man.pet_otc, 20);
+	
+		cout << "Введите год: ";
+		cin >> petient[i].year;
+		
+		cout << "Введите дату: ";
+		cin.ignore();
+		cin.getline(petient[i].date, 20);
+	
+		cout << "Введите группу крови: ";
+		cin >> petient[i].bl;
+	
+		cout << "Введите номер: ";
+		cin >> petient[i].num;
+		
+	}
+	cout << "*****************Итоговая база пациентов*****************" << endl;
+	for (int k = 0; k < num; k++)
+	{
+		cout << "Название болезни: ";
+		cout << petient[k].ill << endl;
+		cout << "Фио пациента: ";
+		cout << petient[k].man.pet_name << " ";
+		cout << petient[k].man.pet_sur << " ";
+		cout << petient[k].man.pet_otc << endl;
+		cout << "Год рождения: ";
+		cout << petient[k].year << endl;
+		cout << "Дата рождения: ";
+		cout << petient[k].date << endl;
+		cout << "Расходы: ";
+		cout << petient[k].bl << endl;
+		cout << "Доходы: ";
+		cout << petient[k].num << endl;
+		cout << "---------------------------------------------------------" << endl;
+	}
+	cout << "Хотите выполнить сортировку по номеру: ";
+	int choice;
+	cin >> choice;
+	if (choice == 1)
+	{
+		for (int k = 0; k < num; k++)
+			for (int j = 0; j < num - k - 1; j++)
+				if (petient[j].num < petient[j + 1].num) {
+					swap(petient[j].num, petient[j + 1].num);
+					swap(petient[j].bl, petient[j + 1].bl);
+					swap(petient[j].ill, petient[j + 1].ill);
+					swap(petient[j].man.pet_name, petient[j + 1].man.pet_name);
+					swap(petient[j].man.pet_sur, petient[j + 1].man.pet_sur);
+					swap(petient[j].man.pet_otc, petient[j + 1].man.pet_otc);
+					swap(petient[j].year, petient[j + 1].year);
+					swap(petient[j].date, petient[j + 1].date);
+				}
+	}
+	cout << "*****************Сортировка прошла успешно*****************" << endl;
+	for (int r = 0; r < num; r++)
+	{
+		cout << "Название болезни: ";
+		cout << petient[r].ill << endl;
+		cout << "Фио пациента: ";
+		cout << petient[r].man.pet_name << " ";
+		cout << petient[r].man.pet_sur << " ";
+		cout << petient[r].man.pet_otc << endl;
+		cout << "Год рождения: ";
+		cout << petient[r].year << endl;
+		cout << "Дата рождения: ";
+		cout << petient[r].date << endl;
+		cout << "Группа крови: ";
+		cout << petient[r].bl << endl;
+		cout << "Номер карты: ";
+		cout << petient[r].num << endl;
+		cout << "---------------------------------------------------------" << endl;
+	}
+
+	fopen_s(&file, "output.txt", "a");
+
+	if (file != NULL)
+	{
+		for (int i = 0; i < num; i++)
+		{
+			fputs(petient[i].ill, file);
+			fprintf_s(file, "%c", '\t');
+			fputs(petient[i].man.pet_name, file);
+			fprintf_s(file, "%c", '\t');
+			fputs(petient[i].man.pet_sur, file);
+			fprintf_s(file, "%c", '\t');
+			fputs(petient[i].man.pet_otc, file);
+			fprintf_s(file, "%c", '\t');
+			fprintf_s(file, "%d", petient[i].year);
+			fprintf_s(file, "%c", '\t');
+			fputs(petient[i].date, file);
+			fprintf_s(file, "%c", '\t');
+			fprintf_s(file, "%d", petient[i].bl);
+			fprintf_s(file, "%c", '\t');
+			fprintf_s(file, "%d", petient[i].num);
+			fprintf_s(file, "%c", '\n');
+
+		}
+		fclose(file);
+	}
+
+	delete[] petient;
+	system("pause");
+	return 0;
+}
