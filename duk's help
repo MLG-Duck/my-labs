@@ -1,0 +1,179 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include<iostream>
+#include<fstream>
+#include<ctime>
+#include<string>
+
+using namespace std;
+int a; // переменная для подсчёта базы услуг, в дальнейшем пригодится для поиска ночных услуг в массиву услуг
+struct DataAboutServicesOnThePhones //структура номеров и подключённым к ним услугам вместе с датами начала и окончания
+
+ {
+	 char phoneNumber[12];
+	 char code[2];
+	 char day[3];
+	 char month[3];
+	 char year[7];
+	 char hours[3];
+	 char minute[3];
+	 char second[3];
+	 char duration[40];
+	 };
+
+ struct InformationOnServices //структура расписывающая тарифы
+
+ {
+	 char nameOfTheService[40];
+	 char code[3];
+	 float tariff;
+	 char period[7];
+	 };
+
+ struct ClientInformation //информация о клиентах и об их договорах
+
+ {
+
+	 char fullNameOfClient[40];
+	 char phoneNumber[12];
+	 int dateOfConclusionDay;
+	 int dateOfConclusionMonth;
+	 int dateOfConclusionYear;
+	 char endDateOfTheContract[12];
+	 char debt[15];
+	 char credit[20];
+
+	 };
+
+ struct TypesOfServices //наименования услуг
+
+ {
+
+	 char service1[30];
+	 char service2[30];
+	 char service3[30];
+ };
+
+ int main()
+ {
+	 
+	 setlocale(LC_ALL, "Rus");
+	 DataAboutServicesOnThePhones servicesNumberOfClient[24]; // создание переменных типа наших структур
+	 InformationOnServices infOnServ[5];
+	 ClientInformation client[10];
+	 TypesOfServices nameOfServices;
+
+
+	 //Поочерёдное открытие файлов и запись из них в структуры.
+	 ifstream CLIENTS("data.txt", ios::in); // файл с данными о клиентах
+	 for (int i = 0; i<10 ; i++)
+	 {
+		 CLIENTS.getline(client[i].fullNameOfClient, 100, ',');
+		 CLIENTS.getline(client[i].phoneNumber, 100, ',');
+		 CLIENTS >> client[i].dateOfConclusionDay >> client[i].dateOfConclusionMonth >> client[i].dateOfConclusionYear;
+		 CLIENTS.getline(client[i].endDateOfTheContract, 100, ',');
+		 CLIENTS.getline(client[i].debt, 100, ',');
+		 CLIENTS.getline(client[i].credit, 100, '\n');
+		 
+	 }
+	 //////////////////////////
+		
+	 for (int i = 0; i < 10; i++) {
+		 cout << i + 1 << "." << " " << client[i].fullNameOfClient << endl; // Это для выбора клиента для отчёта
+	 }
+
+	 ifstream SERVICES("Param.ini.txt", ios::in); // файл с данными об услугах оператора
+	 for (int i = 0; !SERVICES.eof(); i++)
+	 {
+		 SERVICES.getline(infOnServ[i].nameOfTheService, 40, ',');
+		 SERVICES.getline(infOnServ[i].code, 40, ',');
+		 SERVICES >> infOnServ[i].tariff;
+		 SERVICES.getline(infOnServ[i].period, 40, '\n');
+	 }
+
+
+	 ifstream USETHESERVISE("uslData.txt", ios::in); // файл с использованными услугами клиентов
+	 for (int i = 0; i < 40 && !USETHESERVISE.eof(); i++)
+	 {
+		 USETHESERVISE.getline(servicesNumberOfClient[i].phoneNumber, 40, ',');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].code, 40, ',');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].day, 40, '.');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].month, 40, '.');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].year, 40, ' ');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].hours, 40, ':');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].minute, 40, ':');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].second, 40, ',');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].duration, 40, '\n');
+		
+		 a++;
+	 }
+
+
+	 ifstream SERVICESNAME("Param.ini.txt", ios::in); // файл с заданием имён тарифов
+	 SERVICESNAME.getline(nameOfServices.service1, 40, ',');
+	 SERVICESNAME.getline(nameOfServices.service2, 40, ',');
+	 SERVICESNAME.getline(nameOfServices.service3, 40, '\n');
+
+
+	 CLIENTS.close();
+	 SERVICES.close();
+	 SERVICESNAME.close();
+	 USETHESERVISE.close();
+
+	 int b, c,d;
+	 d = 0;
+	 cout << "Enter the number of client for search night-services: ";
+	 cin >> b;
+
+	 //Ночными будут считаться услуги, время пользования которыми лежит в промежутке от 00:00:00 по 07:00:00
+	 ofstream fout;
+	 fout.open("Report.txt", ios::out);
+	 fout << client[b-1].fullNameOfClient << endl;
+	 for (int i = 0; i < a; i++) {
+		 if ((servicesNumberOfClient[i].hours == "00" || "01" || "02" || "03" || "04" || "05" || "06" || "07") &&
+			 (servicesNumberOfClient[i].phoneNumber == client[b].phoneNumber)) {
+			 c = atoi(servicesNumberOfClient[i].code);
+			 fout << infOnServ[c].nameOfTheService << endl << servicesNumberOfClient[i].hours;
+			 d++;
+			 
+		 }
+	 }
+	 if (d == 0)
+		 fout << "Услуги не найдены";
+	 fout.close();
+	 system("pause");
+	 return 0;
+ }
+				 
+
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
