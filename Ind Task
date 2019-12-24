@@ -1,0 +1,170 @@
+#define _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable:4996)
+#include<iostream>
+#include<fstream>
+#include<string>
+
+#include <clocale> // необходим для вызова функции, позволяющей использовать кириллицу 
+
+
+using namespace std;
+int a,b,t,s; 
+
+struct DataAboutServicesOnThePhones //структура номеров и подключённым к ним услугам вместе с датами начала и окончания
+
+ {
+	 char phoneNumber[12];
+	 char code[1];
+	 char day[3];
+	 char month[3];
+	 char year[7];
+	 char hours[2];
+	 char minute[3];
+	 char second[3];
+	 char duration[40];
+	 };
+
+ struct InformationOnServices //структура расписывающая тарифы
+
+ {
+	 char nameOfTheService[40];
+	 char code[1];
+	 float tariff;
+	 char period[7];
+	 };
+
+ struct ClientInformation //информация о клиентах и об их договорах
+
+ {
+
+	 char fullNameOfClient[40];
+	 char phoneNumber[12];
+	 int dateOfConclusionDay;
+	 int dateOfConclusionMonth;
+	 int dateOfConclusionYear;
+	 char endDateOfTheContract[12];
+	 char debt[15];
+	 char credit[20];
+
+	 };
+
+ struct TypesOfServices //наименования услуг
+
+ {
+
+	 char service1[30];
+	 char service2[30];
+	 char service3[30];
+ };
+
+ struct input
+ {
+	 char clname[40];
+ };
+
+ int main()
+ {
+	 int count = 0;
+	 ofstream Reset("Report.txt", ios::trunc); // убираем данные из файла отчёта
+	 Reset.close();
+	 
+	 setlocale(LC_ALL, "Rus");
+	 DataAboutServicesOnThePhones servicesNumberOfClient[24]; // создание переменных типа наших структур
+	 InformationOnServices infOnServ[5];
+	 ClientInformation client[10];
+	 TypesOfServices nameOfServices;
+	 input inp[10];
+
+
+	 //Поочерёдное открытие файлов и запись из них в структуры.
+	 ifstream CLIENTS("data.txt", ios::in); // файл с данными о клиентах
+	 for (int i = 0; i<10 ; i++)
+	 {
+		 CLIENTS.getline(client[i].fullNameOfClient, 100, ',');
+		 CLIENTS.getline(client[i].phoneNumber, 100, ',');
+		 CLIENTS >> client[i].dateOfConclusionDay >> client[i].dateOfConclusionMonth >> client[i].dateOfConclusionYear;
+		 CLIENTS.getline(client[i].endDateOfTheContract, 100, ',');
+		 CLIENTS.getline(client[i].debt, 100, ',');
+		 CLIENTS.getline(client[i].credit, 100, '\n');
+		 
+	 }
+	 //////////////////////////
+		
+	 for (int i = 0; i < 10; i++) {
+		 cout << i + 1 << "." << " " << client[i].fullNameOfClient << endl; // Это для выбора клиентjd для отчёта
+	 }
+
+	 ifstream SERVICES("Param.ini", ios::in); // файл с данными об услугах оператора
+	 for (int i = 0; !SERVICES.eof(); i++)
+	 {
+		 SERVICES.getline(infOnServ[i].nameOfTheService, 40, ',');
+		 SERVICES.getline(infOnServ[i].code, 40, ',');
+		 SERVICES >> infOnServ[i].tariff;
+		 SERVICES.getline(infOnServ[i].period, 40, '\n');
+	 }
+
+
+	 ifstream USETHESERVISE("uslData.txt", ios::in); // файл с использованными услугами клиентов
+	 for (int i = 0; i < 40 && !USETHESERVISE.eof(); i++)
+	 {
+		 USETHESERVISE.getline(servicesNumberOfClient[i].phoneNumber, 40, ',');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].code, 40, ',');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].day, 40, '.');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].month, 40, '.');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].year, 40, ' ');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].hours, 40, ':');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].minute, 40, ':');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].second, 40, ',');
+		 USETHESERVISE.getline(servicesNumberOfClient[i].duration, 40, '\n');
+		 b++;
+		
+		 
+	 }
+
+
+	 ifstream SERVICESNAME("Param.ini", ios::in); // файл с заданием имён тарифов
+	 SERVICESNAME.getline(nameOfServices.service1, 40, ',');
+	 SERVICESNAME.getline(nameOfServices.service2, 40, ',');
+	 SERVICESNAME.getline(nameOfServices.service3, 40, '\n');
+
+	 //Ночными будут считаться услуги, время пользования которыми лежит в промежутке от 00:00:00 по 07:00:00
+	 //Нужно считать входные данные из файла. 
+	 ifstream input("input.txt");  // создаём два класса для ввода и вывода данных
+	 ofstream output("Report.txt");
+	 for (int i = 0; !input.eof(); i++) {
+		 input.getline(inp[i].clname, 40, '\n');
+		 for (a = 0; a < 10; a++) {
+			 if (count == 0)
+
+			 count = 0;
+			 if (strcmp(inp[i].clname,client[a].fullNameOfClient)==0) {
+				output << client[a].fullNameOfClient << endl << endl;
+
+				 for (t = 0; t < 24; t++) {
+					 if ((strcmp(client[a].phoneNumber,servicesNumberOfClient[t].phoneNumber) == 0) && ((strcmp(servicesNumberOfClient[t].hours,"00" )==1)|| (strcmp(servicesNumberOfClient[t].hours, "01") == 1)|| (strcmp(servicesNumberOfClient[t].hours, "02") == 1) || (strcmp(servicesNumberOfClient[t].hours, "03") == 1) ||(strcmp(servicesNumberOfClient[t].hours, "04") == 1)|| (strcmp(servicesNumberOfClient[t].hours, "05") == 1) || (strcmp(servicesNumberOfClient[t].hours, "06") == 1)|| (strcmp(servicesNumberOfClient[t].hours, "07") == 1))) {
+						
+						 s = (int)servicesNumberOfClient[t].code[0] - (int)'0'-1;
+						 
+						 output << infOnServ[s].nameOfTheService << endl;
+						 count++;
+					 }
+				 }
+			 }
+		 }
+
+	 }
+	 
+
+
+	 CLIENTS.close();
+	 SERVICES.close();
+	 SERVICESNAME.close();
+	 USETHESERVISE.close();
+	 input.close();
+	 output.close();
+
+
+	 system("pause");
+	 return 0;
+ }
+				 
