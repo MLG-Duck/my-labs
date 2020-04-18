@@ -1,0 +1,136 @@
+from numpy import *
+from copy import deepcopy
+
+'''
+Формат записи СЛАУ 4 порядка (для 3 пишем без переменной t):
+	+ 5x - 9y + 1z + 4t = - 2
+	Матрица должна быть квадратной.
+
+
+'''
+
+
+def check(a, mn):
+    d = deepcopy(a)
+    for i in range(len(d)):
+        d[i].append(mn[i])
+    if len(a) == linalg.matrix_rank(d) and len(a) == linalg.matrix_rank(a):
+        try:
+
+            kramer(a, mn)
+            re_verse(a, mn)
+            gauss(d)
+
+        except:
+            with open('output1.txt', 'a', encoding='utf8') as f:
+                f.write(
+                    'При детерминанте = 0 решения методами матричным и Крамера не представляется возможным\n')
+            gauss(d)
+    else:
+        with open('output1.txt', 'a', encoding='utf8') as f:
+            f.write('Решений нет\n')
+    return
+
+
+def modify(temp):
+    try:
+        end_matrica = []
+        mn = []
+        for i in temp:
+            raw = i.find('=')
+            prom = i[:raw].strip()
+            new = prom.split(' ')
+            for i in range(len(new)):
+                if i % 2 != 0:
+                    new[i] = new[i][:-1]
+            il = []
+            for i in range(0, len(new), 2):
+                s = float(new[i] + new[i + 1])
+                il.append(s)
+            end_matrica.append(il)
+        for i in temp:
+            m = i.split('=')
+            mn.append(m[-1])
+        for i in range(len(mn)):
+            if len(mn[i]) > 2:
+                mn[i] = mn[i][1] + mn[i][3:]
+        for i in range(len(mn)):
+            mn[i] = float(mn[i])
+        check(end_matrica, mn)
+    except:
+        with open('output.txt', 'a', encoding='utf8') as f:
+            f.write('Неверный формат входных данных\n')
+    return
+
+
+def gauss(a):
+    x = [0 for i in range(len(a))]
+    n = len(a)
+    for i in range(len(a[0])):
+        if a[0][i] != 0:
+            il = i
+            break
+    for i in range(len(a)):
+        a[i][0], a[i][il] = a[i][il], a[i][0]
+    for k in range(1, n):
+        for j in range(k, n):
+            m = a[j][k - 1] / a[k - 1][k - 1]
+            for i in range(0, n + 1):
+                a[j][i] = a[j][i] - m * a[k - 1][i]
+    for i in range(n - 1, -1, -1):
+        x[i] = a[i][n] / a[i][i]
+        for c in range(n - 1, i, -1):
+            x[i] = x[i] - a[i][c] * x[c] / a[i][i]
+    for i in range(len(x)):
+        if x[i] == -0.0 or x[i] == +0.0:
+            x[i] = 0.0
+    for i in range(len(x)):
+        x[i] = round(x[i], 2)
+    x[0], x[il] = x[il], x[0]
+    with open('output1.txt', 'a', encoding='utf8') as f:
+        f.write('Решения методом Гаусса:\n')
+        f.write(str(x) + '\n')
+    return
+
+
+def re_verse(end_matrica, mn):
+    invert = linalg.inv(end_matrica)
+    solve = matmul(invert, mn)
+    for j in range(len(solve)):
+        solve[j] = round(solve[j], 2)
+    for i in range(len(solve)):
+        if solve[i] == -0.0 or solve[i] == +0.0:
+            solve[i] = 0.0
+    with open('output1.txt', 'a', encoding='utf8') as f:
+        f.write('Решения через обратную матрицу:\n')
+        f.write(str(solve) + '\n')
+    return
+
+
+def kramer(end_matrica, mn):
+    solve = []
+    opredelitel = round(linalg.det(end_matrica), 6)
+    for i in range(len(end_matrica)):
+        pr = copy(end_matrica)
+        pr[:, i] = mn
+        op = round(linalg.det(pr), 6)
+        solve.append(op / opredelitel)
+    for i in range(len(solve)):
+        if solve[i] == -0.0 or solve[i] == +0.0:
+            solve[i] = 0.0
+    for i in range(len(solve)):
+        solve[i] = round(solve[i], 2)
+    with open('output1.txt', 'a', encoding='utf8') as f:
+        f.write('Решения методом крамера:\n')
+        f.write(str(solve) + '\n')
+    return
+
+
+temp = []
+with open('output1.txt', 'w', encoding='utf8') as f:
+    pass
+with open('input1.txt', 'r', encoding='utf8') as f:
+    for i in f.readlines():
+        temp.append(i)
+
+modify(temp)
