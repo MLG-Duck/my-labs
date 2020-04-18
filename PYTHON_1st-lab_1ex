@@ -1,0 +1,105 @@
+from math import sqrt
+
+
+
+
+def find_coef(enter):
+      enter.lower()
+      enter = enter.replace(' ', '')
+      enter = enter.replace(',', '.')
+      enter = enter.replace('^2', '')
+      place1 = enter.find('x',0)
+      place2 = enter.find('x',place1+1)
+      try:
+            try: a = int(enter[:place1])
+            except:
+                  if place1==0:
+                        a=1
+                  if enter[place1-1]=='-':
+                        a=-1
+
+
+
+            b = int(enter[place1+1:place2])
+            c = int(enter[place2+1:enter.find('=')])
+      except:
+            try: a = float(enter[:place1])
+            except:
+                  if place1==0:
+                        a=1
+                  if enter[place1-1]=='-':
+                        a=-1
+
+            try:
+                  b = float(enter[place1+1:place2])
+            except:
+                  if enter[place2-1] == '-':
+                        b = -1
+                  if enter[place2 - 1] == '+':
+                        b = 1
+            c = float(enter[place2+1:enter.find('=')])
+
+      return a, b, c
+
+def viet(a,b,c):
+      if a==1:
+            for i in range(-100,100):
+                  x_1 = i
+                  for j in range(-100,100):
+                        x_2 = j
+                        if x_1 + x_2 == -b/a and x_1*x_2 == c/a:
+                              return x_1, x_2
+
+def disc(a,b,c):
+      print("Viet is not possible")
+      d = b*b-4*a*c
+      if d>=0:
+            d = sqrt(d)
+            x_1 = (-b+d)/(2*a)
+            x_2 = (-b-d)/(2*a)
+            return x_1, x_2
+      else:
+            d = -d
+            x_1 = '({0} - {1}i) / {2}'.format(-b, sqrt(d), 2 * a)
+            x_2 = '({0} + {1}i) / {2}'.format(-b, sqrt(d), 2 * a)
+            print('Valid roots not founded, real roots is: ', x_1, ';', x_2)
+            return x_1, x_2
+
+def chek(a,b,c,x_1,x_2):
+
+      try:
+            (x_1*x_1*a+x_1*b+c == 0) and (x_2*x_2*a+x_2*b+c == 0)
+            token = 1
+            infel_1,infel_2 = 0
+
+      except:
+            token = 0
+            d1 = x_1*x_1*a+x_1*b+c
+            infel_1 = abs(float(d1))
+            d2= x_1*x_1*a+x_1*b+c
+            infel_2 = abs(float(d2))
+
+      return token, infel_1, infel_2
+
+
+
+
+
+enter = input("Write ur polly like 'ax^2+bx+c=0'= ")
+a,b,c = find_coef(enter)
+
+
+try:
+      x_1, x_2 = viet(a, b, c)
+except:
+      x_1, x_2 = disc(a,b,c)
+
+print('x_1= ',x_1,' x_2= ', x_2)
+
+try:
+      token,infel_1,infel_2 = chek(a,b,c,x_1,x_2)
+      if token == 1:
+            print('Change showed that roots have not infelicity')
+      else:
+            print('infelisity of first root: ', infel_1, 'infelisity of second root: ', infel_2)
+except: print("roots is real numbers, i can't find infelisity")
