@@ -1,0 +1,306 @@
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+from numpy import *
+from copy import deepcopy
+
+
+#ПОлином второй степени. Описание его функций
+from math import sqrt
+
+global out,enter
+
+
+def find_coef(enter):
+      enter.lower()
+      enter = enter.replace(' ', '')
+      enter = enter.replace(',', '.')
+      enter = enter.replace('^2', '')
+      place1 = enter.find('x',0)
+      place2 = enter.find('x',place1+1)
+      try: a = int(enter[:place1])
+      except:
+            if place1==0:
+                  a=1
+            if enter[place1-1]=='-':
+                  a=-1
+
+      b = int(enter[place1+1:place2])
+      c = int(enter[place2+1:enter.find('=')])
+      return a, b, c
+
+def viet(a,b,c):
+      if a==1:
+            for i in range(-100,100):
+                  x_1 = i
+                  for j in range(-100,100):
+                        x_2 = j
+                        if x_1 + x_2 == -b/a and x_1*x_2 == c/a:
+                              return str(x_1), str(x_2)
+
+def disc(a,b,c,out):
+      out += "\nViet is not possible"
+      d = b*b-4*a*c
+      if d>=0:
+            d = sqrt(d)
+            try:
+                  x_1 = (-b+d)/(2*a)
+                  x_2 = (-b-d)/(2*a)
+                  return str(x_1), str(x_2),out
+            except:
+                  x_1 = '0'
+                  x_2 = '0'
+                  return x_1 , x_2
+      else:
+            d = -d
+            x_1 = '({0} - {1}i) / {2}'.format(-b, sqrt(d), 2 * a)
+            x_2 = '({0} + {1}i) / {2}'.format(-b, sqrt(d), 2 * a)
+
+            return x_1, x_2,out
+
+def chek(a,b,c,x_1,x_2):
+
+      try:
+            (x_1*x_1*a+x_1*b+c == 0) and (x_2*x_2*a+x_2*b+c == 0)
+            token = 1
+            infel_1,infel_2 = 0
+
+      except:
+            token = 0
+            d1 = x_1*x_1*a+x_1*b+c
+            infel_1 = abs(float(d1))
+            d2= x_1*x_1*a+x_1*b+c
+            infel_2 = abs(float(d2))
+
+      return token, str(infel_1), str(infel_2)
+
+
+
+#Общая функция для поиска корней и записи в out(строка с текстом окна-ответа)
+def polly():
+      enter = calc.get()
+      a,b,c = find_coef(enter)
+      out=''
+
+      try:
+            x_1, x_2 = viet(a, b, c)
+      except:
+            x_1, x_2,out = disc(a,b,c,out)
+
+      out += '\nFirst root is= ' + x_1 + ' second root is ' + x_2
+
+      try:
+            token,infel_1,infel_2 = chek(a,b,c,x_1,x_2)
+            if token == 1:
+                  out += '\nChange showed that roots have not infelicity'
+            else:
+                  out += '\nInfelisity of first root: ' + infel_1 + 'infelisity of second root: ' + infel_2
+      except:
+            out += "\nRoots is real numbers, i can't find infelisity"
+      return messagebox.showinfo("result ",out)
+
+########################################################################################################################
+global outt
+def SLAY():
+    outt = ''
+
+
+    ent1 = calc.get()
+    ent2 = calc2.get()
+    ent3 = calc3.get()
+
+    EnterSLAY = ent1 + "\n" + ent2 + "\n" + ent3
+    EnterSLAY = EnterSLAY.split('\n')
+    modify(EnterSLAY, outt)
+pass
+
+def SLAY1():
+    outt = ''
+
+    ent1 = calc.get()
+    ent2 = calc2.get()
+    ent3 = calc3.get()
+    ent4 = calc4.get()
+    EnterSLAY = ent1 + "\n" + ent2 + "\n" + ent3 + "\n" + ent4
+    EnterSLAY = EnterSLAY.split('\n')
+    modify(EnterSLAY, outt)
+
+
+pass
+
+
+
+def check(a, mn,outt):
+    d = deepcopy(a)
+    for i in range(len(d)):
+        d[i].append(mn[i])
+    if len(a) == linalg.matrix_rank(d) and len(a) == linalg.matrix_rank(a):
+        try:
+
+            outt += kramer(a, mn,outt)
+            outt += re_verse(a, mn,outt)
+            outt += gauss(d,outt)
+
+        except:
+            outt += 'При детерминанте = 0 решения методами матричным и Крамера не представляется возможным\n'
+            outt += gauss(d,outt)
+    else:
+        messagebox.showinfo("result ","Решений не найдено!")
+    return messagebox.showinfo("Result ", outt)
+
+
+def modify(EnterSLAY,outt):
+    try:
+        end_matrica = []
+        mn = []
+        for i in EnterSLAY:
+            raw = i.find('=')
+            prom = i[:raw].strip()
+            new = prom.split(' ')
+            for i in range(len(new)):
+                if i % 2 != 0:
+                    new[i] = new[i][:-1]
+            il = []
+            for i in range(0, len(new), 2):
+                s = float(new[i] + new[i + 1])
+                il.append(s)
+            end_matrica.append(il)
+        for i in EnterSLAY:
+            m = i.split('=')
+            mn.append(m[-1])
+        for i in range(len(mn)):
+            if len(mn[i]) > 2:
+                mn[i] = mn[i][1] + mn[i][3:]
+        for i in range(len(mn)):
+            mn[i] = float(mn[i])
+        check(end_matrica, mn,outt)
+    except:
+          messagebox.showinfo("ERROR! ","Неверный формат данных!")
+          return -1
+
+
+    return
+
+
+def gauss(a,outt):
+    x = [0 for i in range(len(a))]
+    n = len(a)
+    for i in range(len(a[0])):
+        if a[0][i] != 0:
+            il = i
+            break
+    for i in range(len(a)):
+        a[i][0], a[i][il] = a[i][il], a[i][0]
+    for k in range(1, n):
+        for j in range(k, n):
+            m = a[j][k - 1] / a[k - 1][k - 1]
+            for i in range(0, n + 1):
+                a[j][i] = a[j][i] - m * a[k - 1][i]
+    for i in range(n - 1, -1, -1):
+        x[i] = a[i][n] / a[i][i]
+        for c in range(n - 1, i, -1):
+            x[i] = x[i] - a[i][c] * x[c] / a[i][i]
+    for i in range(len(x)):
+        if x[i] == -0.0 or x[i] == +0.0:
+            x[i] = 0.0
+    for i in range(len(x)):
+        x[i] = round(x[i], 2)
+    x[0], x[il] = x[il], x[0]
+    outt = 'Решения методом Гаусса:\n' + str(x) + '\n'
+
+
+
+    return  outt
+
+
+def re_verse(end_matrica, mn,outt):
+    invert = linalg.inv(end_matrica)
+    solve = matmul(invert, mn)
+    for j in range(len(solve)):
+        solve[j] = round(solve[j], 2)
+    for i in range(len(solve)):
+        if solve[i] == -0.0 or solve[i] == +0.0:
+            solve[i] = 0.0
+    outt = 'Решения через обратную матрицу:\n' + str(solve) + '\n'
+
+
+
+    return outt
+
+
+def kramer(end_matrica, mn,outt):
+    solve = []
+    opredelitel = round(linalg.det(end_matrica), 6)
+    for i in range(len(end_matrica)):
+        pr = copy(end_matrica)
+        pr[:, i] = mn
+        op = round(linalg.det(pr), 6)
+        solve.append(op / opredelitel)
+    for i in range(len(solve)):
+        if solve[i] == -0.0 or solve[i] == +0.0:
+            solve[i] = 0.0
+    for i in range(len(solve)):
+        solve[i] = round(solve[i], 2)
+
+    outt = 'Решения методом крамера:\n' + str(solve) + '\n'
+
+    return outt
+
+########################################################################################################################
+
+def info(): #Справка
+      inf = "Привет! Эта программа способна решать квадратные\n" \
+            "уравнения и СЛАУ до 3 или 4 ранга. Чтобы решить\n" \
+            "квадратное уравнение вбей его в первую строку \n" \
+            "и нажми кнопку 'решить квад. ур.'." \
+            " \n" \
+            " ЧТобы решить " \
+            "СЛАУ - заполни все строки и нажми на кнопку 'Решить СЛАУ!' Нужного порядка\n" \
+            "Помни: квадратное уравнение должно быть вида: " \
+            "ax^2+bx+c=0. ОБЯЗАТЕЛЬНО ПИШИ ТАК, МЕНЯЙ ТОЛЬКО КОЭФФИЦИЕНТЫ!\n" \
+            "\n" \
+            "\n" \
+            "СЛАУ должно быть вида '+ 5x - 9y + 1z + 4t = - 2'\n" \
+            "Если твоя СЛАУ 3 ранга - убери переменную 't'." \
+            "Цифры и знаки меняй на свой вкус. Удачи!"
+      return messagebox.showinfo("Справка ", inf)
+
+#Создаём интерфейс
+
+
+root = Tk()
+root.title("Deal with it")
+
+#Создаём поле ввода
+calc = StringVar()
+calc_enter = Entry(root,width = 60, textvariable = calc)
+calc_enter.grid(row = 0, column = 0, columnspan = 5)
+
+calc2 = StringVar()
+calc3 = StringVar()
+calc4 = StringVar()
+
+calc_enter = Entry(root,width = 60, textvariable = calc2)
+calc_enter.grid(row = 1, column = 0, columnspan = 5)
+
+calc_enter = Entry(root,width = 60, textvariable = calc3)
+calc_enter.grid(row = 2, column = 0, columnspan = 5)
+
+calc_enter = Entry(root,width = 60, textvariable = calc4)
+calc_enter.grid(row = 3, column = 0, columnspan = 5)
+
+
+
+#Кнопка вычисления квадратного уравнения, которая вызывает нашу функцию
+ttk.Button(root,text="Решить\nквад. ур!", command = lambda: polly() ).grid(column=5, row=1)
+#СЛАУ
+ttk.Button(root,text="Решить СЛАУ 3 порядка!", command = lambda: SLAY() ).grid(column=6, row=1)
+ttk.Button(root,text="Решить СЛАУ 4 порядка!", command = lambda: SLAY1() ).grid(column=6, row=2)
+#Кнопка вызова справки
+ttk.Button(root,text="Справка", command = lambda: info() ).grid(column=5, row=3, columnspan = 2)
+
+
+
+
+
+root.mainloop()
